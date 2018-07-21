@@ -11,9 +11,28 @@ services:
       - "9200:9200"
       - "9300:9300"
     environment:
-      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
     networks:
       - elk
+    volumes:
+      - esdata1:/usr/share/elasticsearch/data
+
+  elasticsearch2:
+    build:
+      context: elasticsearch/
+    volumes:
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
+      discovery.zen.ping.unicast.hosts: "elasticsearch"
+    networks:
+      - elk
+    volumes:
+      - esdata2:/usr/share/elasticsearch/data
 
   logstash:
     build:
@@ -21,6 +40,8 @@ services:
     volumes:
       - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+      - ./log/ga:/var/log/ga:ro
+      - ./log/input:/var/log/input:rw
     ports:
       - "5000:5000"
     environment:
@@ -42,6 +63,12 @@ services:
     depends_on:
       - elasticsearch
 
+
+volumes:
+  esdata1:
+    driver: local
+  esdata2:
+    driver: local
 networks:
 
   elk:
