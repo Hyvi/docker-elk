@@ -17,19 +17,19 @@ services:
     volumes:
       - esdata1:/usr/share/elasticsearch/data
 
-  elasticsearch2:
-    build:
-      context: elasticsearch/
-    volumes:
-      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
-    environment:
-      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
-      discovery.zen.ping.unicast.hosts: "elasticsearch"
-    networks:
-      - elk
-    volumes:
-      - esdata2:/usr/share/elasticsearch/data
-
+  # elasticsearch2:
+    # build:
+    #   context: elasticsearch/
+    # volumes:
+    #   - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+    # environment:
+    #   ES_JAVA_OPTS: "-Xmx512m -Xms512m"
+    #   discovery.zen.ping.unicast.hosts: "elasticsearch"
+    # networks:
+    #   - elk
+    # volumes:
+    #   - esdata2:/usr/share/elasticsearch/data
+#
   logstash:
     build:
       context: logstash/
